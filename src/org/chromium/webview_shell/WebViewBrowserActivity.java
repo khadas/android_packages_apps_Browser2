@@ -85,6 +85,8 @@ public class WebViewBrowserActivity extends Activity implements PopupMenu.OnMenu
     // Maximal size of this state.
     private static final int MAX_STATE_LENGTH = 300 * 1024;
 
+    private final boolean ALLOW_STRICT_MODE = false;
+
     // Map from WebKit permissions to Android permissions
     private static final HashMap<String, String> sPermissions;
     static {
@@ -241,21 +243,23 @@ public class WebViewBrowserActivity extends Activity implements PopupMenu.OnMenu
             }
         });
 
-        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                .detectAll()
-                .penaltyLog()
-                .penaltyDeath()
-                .build());
-        // Conspicuously omitted: detectCleartextNetwork() and detectFileUriExposure() to permit
-        // http:// and file:// origins.
-        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                .detectActivityLeaks()
-                .detectLeakedClosableObjects()
-                .detectLeakedRegistrationObjects()
-                .detectLeakedSqlLiteObjects()
-                .penaltyLog()
-                .penaltyDeath()
-                .build());
+        if (ALLOW_STRICT_MODE) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .penaltyDeath()
+                    .build());
+            // Conspicuously omitted: detectCleartextNetwork() and detectFileUriExposure() to permit
+            // http:// and file:// origins.
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectActivityLeaks()
+                    .detectLeakedClosableObjects()
+                    .detectLeakedRegistrationObjects()
+                    .detectLeakedSqlLiteObjects()
+                    .penaltyLog()
+                    .penaltyDeath()
+                    .build());
+        }
 
         createAndInitializeWebView();
 
